@@ -13,6 +13,7 @@ export class TaskStack extends cdk.Stack {
   }
   createTaskLambdafunction() {
     const helloworldfn = new lambda_node.NodejsFunction(this, "helloworldfn", {
+      functionName :       "helloworldfn",  
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: "getTasks",
       entry: path.join(__dirname, "../controllers/taskController.ts"),
