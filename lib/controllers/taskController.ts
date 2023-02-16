@@ -1,11 +1,10 @@
-import AWS = require("aws-sdk");
+import dynamodb from "../utils/dynamodb";
 
-const dynamoDB = new AWS.DynamoDB();
 exports.getTasks = async function (event: any) {
   var params = {
     TableName: "TodoTable",
   };
-  var result = await dynamoDB.scan(params);
+  var result = await dynamodb.scan(params);
   return {
     statusCode: 200,
     body: result,
