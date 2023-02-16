@@ -52,10 +52,6 @@ export class TaskStack extends cdk.Stack {
     taskResource.addMethod(
       "GET",
       new gateway.LambdaIntegration(getTasksLambdaFn, {}),
-      {
-        authorizationType: gateway.AuthorizationType.NONE,
-        apiKeyRequired: true,
-      }
     );
   }
 }
