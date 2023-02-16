@@ -6,5 +6,8 @@ exports.getTasks = async function (event: any) {
     TableName: "TodoTable",
   };
   var result = await dynamoDB.scan(params);
-  return result;
+  return {
+    statusCode: 200,
+    body: result,
+  };
 };
