@@ -20,6 +20,7 @@ export class TaskStack extends cdk.Stack {
     this.deleteTaskLambdafunction();
     this.editTaskLambdafunction();
     this.newTaskLambdafunction();
+    this.newCombinationLambdafunction();
   }
   createApi() {
     this.api = new gateway.RestApi(this, "taskApi", {});
@@ -118,7 +119,7 @@ export class TaskStack extends cdk.Stack {
 
   newTaskLambdafunction() {
     const taskResource = this.api.root.addResource("new-task");
-    const editTasksLambdaFn = new lambda_node.NodejsFunction(
+    const createTasksLambdaFn = new lambda_node.NodejsFunction(
       this,
       "newTaskLambdafunction",
       {
@@ -140,7 +141,43 @@ export class TaskStack extends cdk.Stack {
     );
     taskResource.addMethod(
       "PUT",
-      new gateway.LambdaIntegration(editTasksLambdaFn, {})
+      new gateway.LambdaIntegration(createTasksLambdaFn, {})
+    );
+  }
+
+  newCombinationLambdafunction() {
+    const taskResource = this.api.root.addResource("combination");
+    const GetCombinationTasksLambdaFn = new lambda_node.NodejsFunction(
+      this,
+      "newCombinationLambdafunction",
+      {
+        functionName: "newCombinationLambdafunction",
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: "createTasks",
+        entry: path.join(__dirname, "../controllers/combinationController.ts"),
+        initialPolicy: [
+          new iam.PolicyStatement({
+            actions: ["dynamodb:Scan"],
+            resources: [
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+                "/index/*",
+            ],
+          }),
+          new iam.PolicyStatement({
+            actions: ["dynamodb:Scan"],
+            resources: [
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+                "/index/*",
+            ],
+          }),
+        ],
+      }
+    );
+    taskResource.addMethod(
+      "GET",
+      new gateway.LambdaIntegration(GetCombinationTasksLambdaFn, {})
     );
   }
 }
