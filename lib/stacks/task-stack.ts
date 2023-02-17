@@ -51,7 +51,22 @@ export class TaskStack extends cdk.Stack {
     //3- create method and integration
     taskResource.addMethod(
       "GET",
-      new gateway.LambdaIntegration(getTasksLambdaFn, {}),
+      new gateway.LambdaIntegration(getTasksLambdaFn, {})
+    );
+
+    taskResource.addMethod(
+      "POST",
+      new gateway.LambdaIntegration(getTasksLambdaFn, {})
+    );
+
+    taskResource.addMethod(
+      "PUT",
+      new gateway.LambdaIntegration(getTasksLambdaFn, {})
+    );
+
+    taskResource.addMethod(
+      "DELETE",
+      new gateway.LambdaIntegration(getTasksLambdaFn, {})
     );
   }
 }
