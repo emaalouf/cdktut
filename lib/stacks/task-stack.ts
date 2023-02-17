@@ -19,6 +19,7 @@ export class TaskStack extends cdk.Stack {
     this.createTaskLambdafunction();
     this.deleteTaskLambdafunction();
     this.editTaskLambdafunction();
+    this.newTaskLambdafunction();
   }
   createApi() {
     this.api = new gateway.RestApi(this, "taskApi", {});
@@ -31,9 +32,9 @@ export class TaskStack extends cdk.Stack {
 
     const getTasksLambdaFn = new lambda_node.NodejsFunction(
       this,
-      "helloworldfn",
+      "getTaskLambdafunction",
       {
-        functionName: "helloworldfn",
+        functionName: "getTaskLambdafunction",
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "getTasks",
         entry: path.join(__dirname, "../controllers/taskController.ts"),
@@ -62,9 +63,9 @@ export class TaskStack extends cdk.Stack {
     //2- create lambda function
     const deleteTasksLambdaFn = new lambda_node.NodejsFunction(
       this,
-      "helloworldfn",
+      "deleteTaskLambdafunction",
       {
-        functionName: "helloworldfn",
+        functionName: "deleteTaskLambdafunction",
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "deleteTasks",
         entry: path.join(__dirname, "../controllers/taskController.ts"),
@@ -91,11 +92,39 @@ export class TaskStack extends cdk.Stack {
     const taskResource = this.api.root.addResource("edit-task");
     const editTasksLambdaFn = new lambda_node.NodejsFunction(
       this,
-      "helloworldfn",
+      "editTaskLambdafunction",
       {
-        functionName: "helloworldfn",
+        functionName: "editTaskLambdafunction",
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "editTasks",
+        entry: path.join(__dirname, "../controllers/taskController.ts"),
+        initialPolicy: [
+          new iam.PolicyStatement({
+            actions: ["dynamodb:putItem"],
+            resources: [
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+                "/index/*",
+            ],
+          }),
+        ],
+      }
+    );
+    taskResource.addMethod(
+      "PUT",
+      new gateway.LambdaIntegration(editTasksLambdaFn, {})
+    );
+  }
+
+  newTaskLambdafunction() {
+    const taskResource = this.api.root.addResource("new-task");
+    const editTasksLambdaFn = new lambda_node.NodejsFunction(
+      this,
+      "newTaskLambdafunction",
+      {
+        functionName: "newTaskLambdafunction",
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: "createTasks",
         entry: path.join(__dirname, "../controllers/taskController.ts"),
         initialPolicy: [
           new iam.PolicyStatement({
