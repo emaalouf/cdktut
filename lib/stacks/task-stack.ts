@@ -110,7 +110,7 @@ export class TaskStack extends cdk.Stack {
       }
     );
     taskResource.addMethod(
-      "DELETE",
+      "PUT",
       new gateway.LambdaIntegration(editTasksLambdaFn, {})
     );
   }
