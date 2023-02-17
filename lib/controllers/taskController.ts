@@ -9,7 +9,7 @@ exports.getTasks = async function (event: any) {
   return success(200, result);
 };
 
-exports.deleteTask = async function (event: any) {
+exports.deleteTasks = async function (event: any) {
   var params = {
     TableName: "TodoTable",
     Key: {
@@ -20,7 +20,7 @@ exports.deleteTask = async function (event: any) {
   return success(200, result);
 };
 
-exports.editTask = async function (event: any) {
+exports.editTasks = async function (event: any) {
   var params = {
     TableName: "TodoTable",
     Key: {

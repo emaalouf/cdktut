@@ -17,6 +17,8 @@ export class TaskStack extends cdk.Stack {
     super(scope, id, props);
     this.createApi();
     this.createTaskLambdafunction();
+    this.deleteTaskLambdafunction();
+    this.editTaskLambdafunction();
   }
   createApi() {
     this.api = new gateway.RestApi(this, "taskApi", {});
@@ -47,26 +49,69 @@ export class TaskStack extends cdk.Stack {
         ],
       }
     );
-
     //3- create method and integration
     taskResource.addMethod(
       "GET",
       new gateway.LambdaIntegration(getTasksLambdaFn, {})
     );
+  }
 
-    taskResource.addMethod(
-      "POST",
-      new gateway.LambdaIntegration(getTasksLambdaFn, {})
-    );
+  deleteTaskLambdafunction() {
+    const taskResource = this.api.root.addResource("delete-task");
 
-    taskResource.addMethod(
-      "PUT",
-      new gateway.LambdaIntegration(getTasksLambdaFn, {})
+    //2- create lambda function
+    const deleteTasksLambdaFn = new lambda_node.NodejsFunction(
+      this,
+      "helloworldfn",
+      {
+        functionName: "helloworldfn",
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: "deleteTasks",
+        entry: path.join(__dirname, "../controllers/taskController.ts"),
+        initialPolicy: [
+          new iam.PolicyStatement({
+            actions: ["dynamodb:deleteItem"],
+            resources: [
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+                "/index/*",
+            ],
+          }),
+        ],
+      }
     );
 
     taskResource.addMethod(
       "DELETE",
-      new gateway.LambdaIntegration(getTasksLambdaFn, {})
+      new gateway.LambdaIntegration(deleteTasksLambdaFn, {})
+    );
+  }
+
+  editTaskLambdafunction() {
+    const taskResource = this.api.root.addResource("edit-task");
+    const editTasksLambdaFn = new lambda_node.NodejsFunction(
+      this,
+      "helloworldfn",
+      {
+        functionName: "helloworldfn",
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: "editTasks",
+        entry: path.join(__dirname, "../controllers/taskController.ts"),
+        initialPolicy: [
+          new iam.PolicyStatement({
+            actions: ["dynamodb:putItem"],
+            resources: [
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
+              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+                "/index/*",
+            ],
+          }),
+        ],
+      }
+    );
+    taskResource.addMethod(
+      "DELETE",
+      new gateway.LambdaIntegration(editTasksLambdaFn, {})
     );
   }
 }
