@@ -24,9 +24,9 @@ exports.createTasks = async function (event: any) {
   var params = {
     TableName: "TodoTable",
     Item: {
-      id: event.queryStringParameters.id,
-      title: event.queryStringParameters.Location,
-      description: event.queryStringParameters.Name,
+      id: event.body.id,
+      Location: event.body.Location,
+      Occupation: event.body.Occupation,
     },
     ConditionExpression: "attribute_not_exists(id)",
   };
