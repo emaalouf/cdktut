@@ -5,15 +5,24 @@ exports.getTasks = async function (event: any) {
   var params = {
     TableName: "TodoTable",
   };
+  var params1 = {
+    TableName: "TasksTable",
+  };
   var result = await dynamodb.scan(params);
-  return success(200, result);
+  var result1 = await dynamodb.scan(params1);
+  return success(200, {
+    todo: result,
+    tasks: result1,
+  });
 };
 
 exports.deleteTasks = async function (event: any) {
+  console.log("event : ", event)
+  const body = JSON.parse(event.body)
   var params = {
-    TableName: "TodoTable",
+    TableName: "TasksTable",
     Key: {
-      id: event.queryStringParameters.id,
+      id: body.id,
     },
   };
   var result = await dynamodb.deleteItem(params);
@@ -21,15 +30,15 @@ exports.deleteTasks = async function (event: any) {
 };
 
 exports.createTasks = async function (event: any) {
+  console.log("event : ", event);
+  const body = JSON.parse(event.body)
   var params = {
-    TableName: "TodoTable",
+    TableName: "TasksTable",
     Item: {
-      id: event.body.id,
-      Location: event.body.Location,
-      Occupation: event.body.Occupation,
+      id: body.id,
     },
-    ConditionExpression: "attribute_not_exists(id)",
   };
+  console.log(params)
   var result = await dynamodb.put(params);
   return success(200, result);
   // return success(200, result);

@@ -43,8 +43,16 @@ export class TaskStack extends cdk.Stack {
           new iam.PolicyStatement({
             actions: ["dynamodb:Scan"],
             resources: [
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable",
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable" +
+                "/index/*",
+            ],
+          }),
+          new iam.PolicyStatement({
+            actions: ["dynamodb:Scan"],
+            resources: [
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable",
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable" +
                 "/index/*",
             ],
           }),
@@ -72,10 +80,10 @@ export class TaskStack extends cdk.Stack {
         entry: path.join(__dirname, "../controllers/taskController.ts"),
         initialPolicy: [
           new iam.PolicyStatement({
-            actions: ["dynamodb:deleteItem"],
+            actions: ["dynamodb:DeleteItem"],
             resources: [
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable",
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable" +
                 "/index/*",
             ],
           }),
@@ -101,10 +109,10 @@ export class TaskStack extends cdk.Stack {
         entry: path.join(__dirname, "../controllers/taskController.ts"),
         initialPolicy: [
           new iam.PolicyStatement({
-            actions: ["dynamodb:putItem"],
+            actions: ["dynamodb:PutItem"],
             resources: [
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable",
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable" +
                 "/index/*",
             ],
           }),
@@ -129,10 +137,10 @@ export class TaskStack extends cdk.Stack {
         entry: path.join(__dirname, "../controllers/taskController.ts"),
         initialPolicy: [
           new iam.PolicyStatement({
-            actions: ["dynamodb:putItem"],
+            actions: ["dynamodb:PutItem"],
             resources: [
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable",
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable" +
                 "/index/*",
             ],
           }),
@@ -140,8 +148,8 @@ export class TaskStack extends cdk.Stack {
       }
     );
     taskResource.addMethod(
-      "PUT",
-      new gateway.LambdaIntegration(createTasksLambdaFn, {})
+      "POST",
+      new gateway.LambdaIntegration(createTasksLambdaFn)
     );
   }
 
@@ -159,8 +167,8 @@ export class TaskStack extends cdk.Stack {
           new iam.PolicyStatement({
             actions: ["dynamodb:Scan"],
             resources: [
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable",
-              "arn:aws:dynamodb:eu-west-1:291140161924:table/TodoTable" +
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable",
+              "arn:aws:dynamodb:eu-west-1:257273543479:table/TasksTable" +
                 "/index/*",
             ],
           }),
