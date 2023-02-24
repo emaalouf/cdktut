@@ -16,6 +16,11 @@ export class DatabaseStack extends Stack {
         type: dynamodb.AttributeType.STRING,
       },
     });
+    dynamodb.Table.addGlobalSecondaryIndex({
+      indexName: "GSI1",
+      partitionKey: { name: "gsi1pk", type: dynamodb.AttributeType.NUMBER },
+      sortKey: { name: "gsi1sk", type: dynamodb.AttributeType.NUMBER },
+    });
   }
 
   createTasksTable() {
@@ -25,6 +30,10 @@ export class DatabaseStack extends Stack {
         name: "id",
         type: dynamodb.AttributeType.STRING,
       },
+    });
+    dynamodb.Table.addLocalSecondaryIndex({
+      indexName: "LSI1",
+      sortKey: { name: "lsi1sk", type: dynamodb.AttributeType.NUMBER },
     });
   }
 }
